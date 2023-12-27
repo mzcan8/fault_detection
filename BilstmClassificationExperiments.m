@@ -34,12 +34,11 @@ valFscoreArr = zeros(1,k);
 
 for i=1:k
     
-    
+    %outarr: one halthy one fulty selection
     st = (i-1)*outcount+1;
     outarr = [arr1(st:st+outcount-1) arr2(st:st+outcount-1)];
-    %outarr = i;
-    %outarr = [1 9 20 19]; kötü sonuç
-    %outarr = [7 8 14 17]; güzel sonuç
+    
+    %outarr = [7 8 14 17];
     
     [TrainingSet,inputData2,TrainingTargets,targets2] = prepareBilstmData(myDir, wsize, wshift, outarr);
     
@@ -81,6 +80,7 @@ for i=1:k
         sequenceInputLayer(inputSize)
         bilstmLayer(numHiddenUnits,'OutputMode', 'last')
         bilstmLayer(numHiddenUnits/2,'OutputMode', 'last')
+        bilstmLayer(numHiddenUnits,'OutputMode', 'last')
         fullyConnectedLayer(numClasses)
         softmaxLayer
         classificationLayer];
@@ -115,40 +115,15 @@ for i=1:k
     valAccArr(i) = info_for_classification.FinalValidationAccuracy;
     accArr(i) = acc;
 
-    %Precision Recall Fscore
     
-    cat0 = categorical({'0'});
-    cat1 = categorical({'1'});
-    
-    tp = sum((val_classes == cat1) & (ValidationTargetsCat == cat1));
-    fp = sum((val_classes == cat1) & (ValidationTargetsCat == cat0));
-    fn = sum((val_classes == cat0) & (ValidationTargetsCat == cat1));
-
-    precision = tp / (tp + fp);
-    recall = tp / (tp + fn);
-    F1 = (2 * precision * recall) / (precision + recall);
-    
-    valPrecArr(i) = precision;
-    valRecArr(i) = recall;
-    valFscoreArr(i) = F1;
     
 end
 
-aveValLoss = sum(valLossArr) / k;
 aveValAcc = sum(valAccArr) / k;
 aveAcc = sum(accArr) / k;
-aveValPrec = sum(valPrecArr) / k;
-aveValRec = sum(valRecArr) / k;
-aveValFscore = sum(valFscoreArr) / k;
 
 aveValAccArr(repeatcount) = aveValAcc;
-aveValFscoreArr(repeatcount) = aveValFscore;
 
 end
 
-final_fscore = mean(aveValFscoreArr)
 final_Acc = mean(aveValAccArr)
-
-%outarr = [1 9 14 20] -> (Fscore: 0.0227)
-%0.4524 - 0.4361 - 0.8468 - 0.4938 - 0.0227 (ave: 0.4504)
-%patience 20: 0.5904
