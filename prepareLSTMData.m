@@ -1,5 +1,4 @@
-function [inputData,outputData] = prepareCnnData(datapath, wsize, wshift)
-
+function [inputData,outputData] = prepareLSTMData(datapath, wsize, wshift)
 
 inputData = cell(0,1);
 outputData = cell(0,1);
@@ -7,8 +6,7 @@ outputData = cell(0,1);
 myFiles = dir(fullfile(datapath,'*.mat'));
 
 for j = 1:length(myFiles)
-    %c4 = 5, h10 = 12
-%    if (j == 5 || j == 12)
+
         baseFileName = myFiles(j).name;
         fullFileName = fullfile(datapath, baseFileName);
         fprintf(1, 'Now reading %s\n', fullFileName);
@@ -43,7 +41,6 @@ for j = 1:length(myFiles)
         inputData = [inputData ; X];
         outputData = [outputData ; Y];
         
- %   end
 end
 
 end
