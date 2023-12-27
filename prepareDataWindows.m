@@ -1,5 +1,6 @@
 function X = prepareDataWindows(data, wsize, wshift)
 %data: 5x1000 (5 features, 1000 instances)
+
 [m,n] = size(data);
 wcount = floor( (n - wsize) / wshift) + 1;
 % Arrange data into cells
