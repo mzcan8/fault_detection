@@ -4,7 +4,7 @@ maxEpochs = 200;
 wsize = 10;
 wshift = 5;
 
-[inputData , targets] = prepareCnnData(myDir, wsize, wshift);
+[inputData , targets] = prepareLSTMData(myDir, wsize, wshift);
 
 instanceCount = length(inputData);
 
@@ -12,7 +12,6 @@ pTrain = 0.80 ;
 pVal = 0.10;
 pTest = 0.10 ;
 idx = randperm(instanceCount);
-%idx = (1:instanceCount);
 trainInd = idx(1:round(pTrain*instanceCount));
 valInd = idx(round(pTrain*instanceCount)+1:round((pTrain+pVal)*instanceCount));
 testInd = idx(round((pTrain+pVal)*instanceCount)+1:end);
@@ -24,10 +23,6 @@ ValidationSet = inputData(valInd,:);
 ValidationData = {ValidationSet,ValidationSet};
 
 layers = [ sequenceInputLayer(featureCount, 'Name', 'in')
-    lstmLayer(40, 'Name', 'lstm1')
-    eluLayer('Name', 'elu1')
-    lstmLayer(30, 'Name', 'lstm2')
-    eluLayer('Name', 'elu2')
     lstmLayer(40, 'Name', 'lstm3')
     %eluLayer('Name', 'relu1')
     fullyConnectedLayer(featureCount, 'Name', 'lstm4')
@@ -46,6 +41,7 @@ options = trainingOptions('adam', ...
 
 [net,info] = trainNetwork(TrainingSet, TrainingSet, layers, options);
 
+%To take encoder part of the network
 %deepNetworkDesigner(net);
 %assembledNet = assembleNetwork( layers_1 ) 
 
@@ -60,7 +56,7 @@ m1 = mean((testMat-predsMat).^2,2);
 rmse = mean(sqrt(m1));
 
 
-%% Üst üste çizdirme
+%% Plot actual and reconstructed signals
 
 %load('c11.mat')
 wsize = 10;
@@ -71,7 +67,7 @@ predsMatWhole = cell2mat(predsWhole');
 sample = [ZT(1:length(predsMatWhole),23),predsMatWhole(23,:)'];
 figure
 plot(sample)
-legend(["actual" "constructed"])
+legend(["actual" "reconstructed"])
 
 %sample2 = [ZT(1:length(predsMatWhole),5),predsMatWhole(5,:)'];
 %figure
