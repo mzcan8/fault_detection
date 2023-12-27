@@ -79,8 +79,6 @@ for i=1:k
     layers_for_classification = [ ...
         sequenceInputLayer(inputSize)
         bilstmLayer(numHiddenUnits,'OutputMode', 'last')
-        bilstmLayer(numHiddenUnits/2,'OutputMode', 'last')
-        bilstmLayer(numHiddenUnits,'OutputMode', 'last')
         fullyConnectedLayer(numClasses)
         softmaxLayer
         classificationLayer];
